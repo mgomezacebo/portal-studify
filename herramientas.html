@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Studyfy · Herramientas</title>
+
+  <!-- Protección -->
+  <script src="security.js"></script>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            "studyfy-green": "#58cc02",
+          },
+          boxShadow: {
+            soft: "0 22px 55px rgba(15,23,42,0.22)",
+          },
+        },
+      },
+    };
+  </script>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-studyfy-green via-emerald-500 to-emerald-700 px-4 py-8">
+
+  <div class="max-w-4xl mx-auto">
+    <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-soft px-8 py-8 md:px-10 md:py-10">
+
+      <!-- Header -->
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+        <div>
+          <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-emerald-600 mb-1">
+            Utilidades Studyfy
+          </p>
+          <h1 class="text-2xl md:text-3xl font-semibold text-gray-900 leading-tight">
+            Herramientas internas
+          </h1>
+          <p class="text-sm text-gray-600 mt-2 max-w-xl">
+            Accede a herramientas pensadas para mejorar tu productividad dentro del ecosistema Studyfy.
+          </p>
+        </div>
+
+        <a href="dashboard.html"
+           class="text-xs md:text-sm text-gray-500 hover:text-gray-800 underline">
+          Volver al panel
+        </a>
+      </div>
+
+      <!-- Herramientas -->
+      <div class="grid gap-4 md:grid-cols-2">
+
+        <!-- Tareas -->
+        <a href="https://to-do-list-mobile-six.vercel.app/"
+           target="_blank"
+           class="group rounded-2xl border border-gray-200 bg-gray-50 px-5 py-5 hover:bg-emerald-50 hover:border-emerald-300 transition-all shadow-sm hover:shadow-md flex flex-col gap-2">
+          <div class="flex items-center gap-3">
+            <div class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-lg">
+              📝
+            </div>
+            <p class="text-sm font-semibold text-gray-900">Lista de tareas</p>
+          </div>
+          <p class="text-xs text-gray-600 mt-1">
+            Organiza tus pendientes con una interfaz rápida, moderna y accesible desde cualquier dispositivo.
+          </p>
+          <span class="text-[11px] font-semibold text-emerald-700 mt-1 group-hover:text-emerald-900">
+            Abrir herramienta →
+          </span>
+        </a>
+
+        <!-- Grabadora -->
+        <a href="https://grabadora.vercel.app/"
+           target="_blank"
+           class="group rounded-2xl border border-gray-200 bg-gray-50 px-5 py-5 hover:bg-emerald-50 hover:border-emerald-300 transition-all shadow-sm hover:shadow-md flex flex-col gap-2">
+          <div class="flex items-center gap-3">
+            <div class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-lg">
+              🎙️
+            </div>
+            <p class="text-sm font-semibold text-gray-900">Grabadora de voz</p>
+          </div>
+          <p class="text-xs text-gray-600 mt-1">
+            Graba notas de voz de forma rápida y guárdalas para usarlas en documentación o tareas.
+          </p>
+          <span class="text-[11px] font-semibold text-emerald-700 mt-1 group-hover:text-emerald-900">
+            Abrir herramienta →
+          </span>
+        </a>
+
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>
