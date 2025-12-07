@@ -16,6 +16,9 @@
           colors: {
             "studyfy-green": "#58cc02",
           },
+          boxShadow: {
+            soft: "0 22px 55px rgba(15,23,42,0.22)",
+          }
         },
       },
     };
@@ -24,54 +27,142 @@
 
 <body class="min-h-screen bg-gradient-to-br from-studyfy-green via-emerald-500 to-emerald-700 flex items-center justify-center px-4">
 
-  <div class="w-full max-w-xl">
-    <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl px-10 py-12">
-      
-      <h1 class="text-3xl font-semibold text-gray-900 text-center mb-8">
-        Portal interno de Studyfy
-      </h1>
+  <div class="w-full max-w-3xl">
+    <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-soft px-6 py-7 md:px-10 md:py-10">
 
-      <div class="space-y-4">
+      <!-- Header -->
+      <header class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-emerald-600 mb-1">
+            Portal interno
+          </p>
+          <h1 class="text-2xl md:text-3xl font-semibold text-gray-900 leading-tight">
+            Panel principal de Studyfy
+          </h1>
+          <p class="text-sm text-gray-600 mt-2 max-w-xl">
+            Accede a los documentos, enlaces, formación y herramientas que necesitas para trabajar con Studyfy.
+          </p>
+        </div>
+        <div class="text-right">
+          <button onclick="logout()" class="text-[11px] text-gray-500 hover:text-gray-800 underline">
+            Cerrar sesión
+          </button>
+        </div>
+      </header>
 
+      <!-- Avisos destacados -->
+      <section class="mb-6">
         <a href="avisos.html"
-           class="block w-full bg-emerald-500 text-white text-center py-3 rounded-xl font-medium shadow-md hover:bg-emerald-400 transition-all">
-          ⚠️Avisos importantes
+           class="flex items-center justify-between gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 hover:bg-amber-100 hover:border-amber-300 transition-all">
+          <div class="flex items-center gap-3">
+            <div class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500 text-white text-lg">
+              ⚠️
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-amber-900">Avisos importantes</p>
+              <p class="text-xs text-amber-800">
+                Revisa incidencias, cambios y comunicaciones relevantes del portal.
+              </p>
+            </div>
+          </div>
+          <span class="hidden sm:inline text-[11px] font-semibold text-amber-800">
+            Ver avisos →
+          </span>
         </a>
-        
-        <a href="docs.html"
-           class="block w-full bg-emerald-500 text-white text-center py-3 rounded-xl font-medium shadow-md hover:bg-emerald-400 transition-all">
-          📄Documentos compartidos
-        </a>
+      </section>
 
-        <a href="enlaces.html"
-           class="block w-full bg-emerald-500 text-white text-center py-3 rounded-xl font-medium shadow-md hover:bg-emerald-400 transition-all">
-          🔗Enlaces compartidos
-        </a>
+      <!-- Grid de accesos -->
+      <section>
+        <div class="grid gap-4 md:grid-cols-2">
 
-        <a href="https://drive.google.com/drive/folders/1sjQNypZW5KGsq804NojDk3qCy0GlQ0x-?usp=sharing"
-           target="_blank"
-           class="block w-full bg-emerald-500 text-white text-center py-3 rounded-xl font-medium shadow-md hover:bg-emerald-400 transition-all">
-          ☁️Google Drive común
-        </a>
+          <!-- Documentos -->
+          <a href="docs.html"
+             class="group rounded-2xl border border-gray-200 bg-gray-50 px-4 py-4 hover:bg-emerald-50 hover:border-emerald-300 transition-all shadow-sm hover:shadow-md flex flex-col justify-between">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-lg">
+                📄
+              </div>
+              <p class="text-sm font-semibold text-gray-900">Documentos compartidos</p>
+            </div>
+            <p class="text-xs text-gray-600">
+              Accede a los documentos subidos al portal (guías, plantillas, fichas…).
+            </p>
+          </a>
 
-        <a href="https://study-fy.vercel.app/app/app.html"
-           target="_blank"
-           class="block w-full bg-emerald-500 text-white text-center py-3 rounded-xl font-medium shadow-md hover:bg-emerald-400 transition-all">
-          📱Acceso a la plataforma
-        </a>
+          <!-- Enlaces -->
+          <a href="enlaces.html"
+             class="group rounded-2xl border border-gray-200 bg-gray-50 px-4 py-4 hover:bg-emerald-50 hover:border-emerald-300 transition-all shadow-sm hover:shadow-md flex flex-col justify-between">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-lg">
+                🔗
+              </div>
+              <p class="text-sm font-semibold text-gray-900">Enlaces compartidos</p>
+            </div>
+            <p class="text-xs text-gray-600">
+              Recopilación de enlaces útiles relacionados con Studyfy y recursos externos.
+            </p>
+          </a>
 
-        <a href="formacion.html"
-           class="block w-full bg-emerald-500 text-white text-center py-3 rounded-xl font-medium shadow-md hover:bg-emerald-400 transition-all">
-          📖Formación
-        </a>
+          <!-- Drive común -->
+          <a href="https://drive.google.com/drive/folders/1sjQNypZW5KGsq804NojDk3qCy0GlQ0x-?usp=sharing"
+             target="_blank"
+             class="group rounded-2xl border border-gray-200 bg-gray-50 px-4 py-4 hover:bg-emerald-50 hover:border-emerald-300 transition-all shadow-sm hover:shadow-md flex flex-col justify-between">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-lg">
+                ☁️
+              </div>
+              <p class="text-sm font-semibold text-gray-900">Google Drive común</p>
+            </div>
+            <p class="text-xs text-gray-600">
+              Carpeta compartida en Google Drive con materiales y archivos del equipo.
+            </p>
+          </a>
 
-      </div>
+          <!-- Plataforma Studyfy -->
+          <a href="https://study-fy.vercel.app/app/app.html"
+             target="_blank"
+             class="group rounded-2xl border border-gray-200 bg-gray-50 px-4 py-4 hover:bg-emerald-50 hover:border-emerald-300 transition-all shadow-sm hover:shadow-md flex flex-col justify-between">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-lg">
+                📱
+              </div>
+              <p class="text-sm font-semibold text-gray-900">Acceso a la plataforma</p>
+            </div>
+            <p class="text-xs text-gray-600">
+              Abre la aplicación principal de Studyfy para trabajar con tus contenidos.
+            </p>
+          </a>
 
-      <div class="text-center mt-8">
-        <button onclick="logout()" class="text-xs text-gray-500 hover:text-gray-700 underline">
-          Cerrar sesión
-        </button>
-      </div>
+          <!-- Formación -->
+          <a href="formacion.html"
+             class="group rounded-2xl border border-gray-200 bg-gray-50 px-4 py-4 hover:bg-emerald-50 hover:border-emerald-300 transition-all shadow-sm hover:shadow-md flex flex-col justify-between">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-lg">
+                📖
+              </div>
+              <p class="text-sm font-semibold text-gray-900">Formación</p>
+            </div>
+            <p class="text-xs text-gray-600">
+              Accede a la formación inicial y a los contenidos de apoyo en Classroom.
+            </p>
+          </a>
+
+          <!-- Placeholder para futuras herramientas -->
+          <a href="herramientas.html"
+             class="group rounded-2xl border border-dashed border-gray-200 bg-gray-50 px-4 py-4 hover:bg-emerald-50 hover:border-emerald-300 transition-all shadow-sm hover:shadow-md flex flex-col justify-between">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-lg">
+                🛠️
+              </div>
+              <p class="text-sm font-semibold text-gray-900">Herramientas</p>
+            </div>
+            <p class="text-xs text-gray-600">
+              Acceso a utilidades internas, paneles y herramientas de soporte (en desarrollo).
+            </p>
+          </a>
+
+        </div>
+      </section>
 
     </div>
   </div>
