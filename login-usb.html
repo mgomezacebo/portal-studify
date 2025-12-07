@@ -27,10 +27,22 @@
           Acceso con llave USB
         </h1>
 
-        <div class="space-y-3 text-sm text-gray-600">
-          <p>1. Conecta tu llave USB al dispositivo.</p>
-          <p>2. Abre el archivo <span class="font-mono text-xs bg-gray-100 px-1 py-0.5 rounded">LLAVE</span> desde la llave y pulsa el botón <span class="font-semibold">“Acceder”</span>.</p>
-          <p>3. Vuelve a esta página y pulsa el botón <span class="font-semibold">“Validar credencial”</span>.</p>
+        <p class="text-sm text-gray-600">
+          Introduce el código generado por tu llave USB y valida el acceso.
+        </p>
+
+        <div class="mt-4 space-y-3 text-left">
+          <label for="codeInput" class="block text-xs font-semibold text-gray-500 uppercase tracking-wide">
+            Código de autenticación
+          </label>
+          <input
+            id="codeInput"
+            type="text"
+            inputmode="numeric"
+            maxlength="6"
+            class="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 font-mono tracking-[0.25em] text-center"
+            placeholder="······"
+          />
         </div>
 
         <div class="mt-4">
@@ -38,41 +50,73 @@
             id="validateButton"
             class="w-full bg-sky-500 text-white rounded-xl py-3 text-sm font-medium shadow-md hover:shadow-lg hover:bg-sky-400 active:scale-95 transition-all duration-200"
           >
-            Validar credencial
+            Validar código
           </button>
         </div>
 
         <p id="status" class="text-xs text-gray-500 min-h-[1.5rem] mt-3">
-          Esperando validación de la llave USB…
+          Esperando código…
+        </p>
+
+        <p class="text-[11px] text-gray-400 mt-4">
+          Si el código es correcto se guardará <span class="font-mono">"autorizado"</span> en <span class="font-mono">localStorage</span> y se redirigirá a <span class="font-mono">dashboard.html</span>.
         </p>
       </div>
     </div>
   </div>
 
   <script>
-    const statusEl = document.getElementById("status");
+    // Lista de códigos válidos (misma lista que en LLAVE.html)
+    const VALID_CODES = [
+      "482901","139284","750129","618472","294085","850216","701593","924718","130576","587204",
+      "319682","406215","975318","562407","813569","457920","690138","274961","805713","992540",
+      "145892","726403","583719","901672","248053","764902","519680","837241","693754","120598",
+      "456780","378214","982410","640159","713805","592143","104589","867201","743982","219675",
+      "508437","395720","681349","927150","312864","870591","759364","236490","681207","540732",
+      "894160","718206","205943","369184","154820","490673","803415","972640","618593","237406",
+      "584910","760328","941275","832619","120476","653709","749520","815306","904732","527690",
+      "368205","190647","746381","580296","269143","918520","357864","602791","483920","714065",
+      "826490","930578","157420","864917","471205","506319","790482","215603","904687","672541",
+      "381760","843259","729160","654871","210598","587463","948120","803276","125964","769048"
+    ];
+
+    const codeInput = document.getElementById("codeInput");
     const validateButton = document.getElementById("validateButton");
+    const statusEl = document.getElementById("status");
 
-    function validateUsbCredential() {
-      const token = localStorage.getItem("USB-valido");
+    function normalizeCode(value) {
+      // Quitar espacios y caracteres no numéricos
+      return value.replace(/\\D/g, "").trim();
+    }
 
-      if (token === "USB-valido") {
-        // Eliminar el token de un solo uso
-        localStorage.removeItem("USB-valido");
+    function validateCode() {
+      const raw = codeInput.value || "";
+      const code = normalizeCode(raw);
 
-        // Marcar sesión como autorizada (igual que en login-nfc)
+      if (code.length !== 6) {
+        statusEl.textContent = "Introduce un código de 6 cifras.";
+        return;
+      }
+
+      if (VALID_CODES.includes(code)) {
+        statusEl.textContent = "Código válido. Accediendo al panel…";
+        // Marcar sesión como autorizada
         localStorage.setItem("autorizado", "autorizado");
-
-        statusEl.textContent = "Credencial válida. Accediendo al panel…";
         // Redirigir al dashboard
         window.location.href = "dashboard.html";
       } else {
-        statusEl.textContent =
-          "No se ha encontrado una credencial válida. Asegúrate de haber ejecutado el archivo LLAVE.html desde la llave USB y pulsado “Acceder”.";
+        statusEl.textContent = "Código no válido. Comprueba el código generado por la llave USB.";
       }
     }
 
-    validateButton.addEventListener("click", validateUsbCredential);
+    validateButton.addEventListener("click", validateCode);
+
+    // Permitir validar con Enter
+    codeInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        validateCode();
+      }
+    });
   </script>
 </body>
 </html>
