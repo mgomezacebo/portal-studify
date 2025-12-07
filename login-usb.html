@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Studyfy · Acceso con USB</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            "studyfy-green": "#58cc02",
+          },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-studyfy-green via-emerald-500 to-emerald-700 flex items-center justify-center px-4">
+  <div class="w-full max-w-md">
+    <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl px-8 py-10">
+      <div class="text-center space-y-6 text-gray-900">
+        <h1 class="text-2xl font-semibold tracking-tight">
+          Acceso con llave USB
+        </h1>
+
+        <div class="space-y-3 text-sm text-gray-600">
+          <p>1. Conecta tu llave USB al dispositivo.</p>
+          <p>2. Abre el archivo <span class="font-mono text-xs bg-gray-100 px-1 py-0.5 rounded">LLAVE</span> desde la llave y pulsa el botón <span class="font-semibold">“Acceder”</span>.</p>
+          <p>3. Vuelve a esta página y pulsa el botón <span class="font-semibold">“Validar credencial”</span>.</p>
+        </div>
+
+        <div class="mt-4">
+          <button
+            id="validateButton"
+            class="w-full bg-sky-500 text-white rounded-xl py-3 text-sm font-medium shadow-md hover:shadow-lg hover:bg-sky-400 active:scale-95 transition-all duration-200"
+          >
+            Validar credencial
+          </button>
+        </div>
+
+        <p id="status" class="text-xs text-gray-500 min-h-[1.5rem] mt-3">
+          Esperando validación de la llave USB…
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const statusEl = document.getElementById("status");
+    const validateButton = document.getElementById("validateButton");
+
+    function validateUsbCredential() {
+      const token = localStorage.getItem("USB-valido");
+
+      if (token === "USB-valido") {
+        // Eliminar el token de un solo uso
+        localStorage.removeItem("USB-valido");
+
+        // Marcar sesión como autorizada (igual que en login-nfc)
+        localStorage.setItem("autorizado", "autorizado");
+
+        statusEl.textContent = "Credencial válida. Accediendo al panel…";
+        // Redirigir al dashboard
+        window.location.href = "dashboard.html";
+      } else {
+        statusEl.textContent =
+          "No se ha encontrado una credencial válida. Asegúrate de haber ejecutado el archivo LLAVE.html desde la llave USB y pulsado “Acceder”.";
+      }
+    }
+
+    validateButton.addEventListener("click", validateUsbCredential);
+  </script>
+</body>
+</html>
