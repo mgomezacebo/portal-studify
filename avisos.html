@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Studyfy · Avisos</title>
+
+  <!-- Protección de acceso -->
+  <script src="security.js"></script>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            "studyfy-green": "#58cc02",
+          },
+          boxShadow: {
+            soft: "0 20px 55px rgba(15,23,42,0.22)",
+          }
+        },
+      },
+    };
+  </script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-studyfy-green via-emerald-500 to-emerald-700 px-4 py-8">
+
+  <div class="max-w-4xl mx-auto">
+    <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-soft px-8 py-8 md:px-10 md:py-10">
+
+      <!-- Header -->
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+        <div>
+          <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-emerald-600 mb-2">
+            Centro de avisos
+          </p>
+          <h1 class="text-2xl md:text-3xl font-semibold text-gray-900 leading-tight">
+            Avisos activos del portal Studyfy
+          </h1>
+          <p class="text-sm text-gray-600 mt-2 max-w-xl">
+            Aquí se muestran los avisos importantes relacionados con el portal, la formación y el uso de Studyfy.
+          </p>
+        </div>
+        <a href="dashboard.html"
+           class="text-xs md:text-sm text-gray-500 hover:text-gray-800 underline text-right">
+          Volver al panel
+        </a>
+      </div>
+
+      <!-- Resumen -->
+      <div class="flex items-center justify-between mb-4 text-xs text-gray-500">
+        <span id="summaryLabel" class="font-medium"></span>
+        <span class="hidden sm:inline">Fuente: <span class="font-mono">avisos.csv</span></span>
+      </div>
+
+      <!-- Lista de avisos -->
+      <div id="avisosContainer" class="space-y-3">
+        <div id="loadingMsg" class="flex items-center gap-2 text-xs text-gray-500">
+          <span class="inline-flex h-2 w-2 animate-pulse rounded-full bg-emerald-500"></span>
+          <span>Cargando avisos desde <span class="font-mono">avisos.csv</span>…</span>
+        </div>
+      </div>
+
+      <p id="errorMsg" class="mt-4 text-xs text-red-500 hidden"></p>
+    </div>
+  </div>
+
+  <script>
+    const avisosContainer = document.getElementById("avisosContainer");
+    const loadingMsg = document.getElementById("loadingMsg");
+    const errorMsg = document.getElementById("errorMsg");
+    const summaryLabel = document.getElementById("summaryLabel");
+
+    async function loadAvisos() {
+      try {
+        const res = await fetch("avisos.csv?_=" + Date.now());
+        if (!res.ok) {
+          throw new Error("No se pudo cargar avisos.csv");
+        }
+
+        const text = await res.text();
+        const lines = text
+          .split(/\r?\n/)
+          .map(l => l.trim())
+          .filter(l => l.length > 0);
+
+        avisosContainer.innerHTML = "";
+
+        if (lines.length === 0) {
+          avisosContainer.innerHTML = `
+            <div class="rounded-2xl border border-gray-200 bg-gray-50 px-5 py-6 text-center">
+              <p class="text-sm font-semibold text-gray-800 mb-1">Sin avisos activos</p>
+              <p class="text-xs text-gray-500">
+                En este momento no hay ningún aviso publicado. Vuelve a consultar más tarde.
+              </p>
+            </div>
+          `;
+          summaryLabel.textContent = "0 avisos activos";
+          return;
+        }
+
+        let count = 0;
+
+        lines.forEach(line => {
+          // Formato: Titulo,Descripción del aviso,Enlace adjunto
+          const parts = line.split(",");
+          if (parts.length < 2) return;
+
+          const titulo = parts[0].trim();
+          const descripcion = parts[1].trim();
+          const enlace = (parts[2] || "").trim();
+
+          count++;
+
+          const card = document.createElement("article");
+          card.className =
+            "rounded-2xl border border-gray-200 bg-gray-50 px-5 py-4 flex flex-col gap-2 hover:bg-emerald-50 hover:border-emerald-300 transition-all shadow-sm hover:shadow-md";
+
+          const linkHtml = enlace
+            ? `
+              <a href="${enlace}"
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 hover:text-emerald-900 mt-1">
+                <span>Más información</span>
+                <span aria-hidden="true">↗</span>
+              </a>
+            `
+            : `
+              <span class="text-[11px] text-gray-400 mt-1">
+                Sin enlace adicional
+              </span>
+            `;
+
+          card.innerHTML = `
+            <header class="flex items-start justify-between gap-3">
+              <div>
+                <p class="text-sm font-semibold text-gray-900">
+                  ${titulo || "Aviso sin título"}
+                </p>
+              </div>
+              <span class="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-emerald-700">
+                Aviso activo
+              </span>
+            </header>
+
+            <p class="text-xs text-gray-600 leading-relaxed">
+              ${descripcion || "Sin descripción"}
+            </p>
+
+            <footer>
+              ${linkHtml}
+            </footer>
+          `;
+
+          avisosContainer.appendChild(card);
+        });
+
+        summaryLabel.textContent =
+          count === 1 ? "1 aviso activo" : `${count} avisos activos`;
+
+      } catch (err) {
+        console.error(err);
+        if (loadingMsg) loadingMsg.remove();
+        errorMsg.textContent =
+          "Error al cargar los avisos. Revisa que avisos.csv exista y tenga el formato correcto.";
+        errorMsg.classList.remove("hidden");
+      }
+    }
+
+    loadAvisos();
+  </script>
+</body>
+</html>
