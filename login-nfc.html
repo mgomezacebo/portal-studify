@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Studyfy · Acceso con NFC</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            "studyfy-green": "#58cc02",
+          },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-studyfy-green via-emerald-500 to-emerald-700 flex items-center justify-center px-4">
+  <div class="w-full max-w-md">
+    <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl px-8 py-10">
+      <div class="text-center space-y-6 text-gray-900">
+        <h1 class="text-2xl font-semibold tracking-tight">
+          Acceso con tarjeta NFC
+        </h1>
+        <p class="text-sm text-gray-600">
+          Acerca tu llave NFC al móvil para validar el acceso.
+        </p>
+
+        <div class="mt-4">
+          <button
+            id="scanButton"
+            class="w-full bg-emerald-500 text-white rounded-xl py-3 text-sm font-medium shadow-md hover:shadow-lg hover:bg-emerald-400 active:scale-95 transition-all duration-200"
+          >
+            Escanear tarjeta NFC
+          </button>
+        </div>
+
+        <p id="status" class="text-xs text-gray-500 min-h-[1.5rem] mt-3">
+          Usa Chrome en Android con NFC activado.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const statusEl = document.getElementById("status");
+    const scanButton = document.getElementById("scanButton");
+
+    let validTags = [];
+
+    async function loadTags() {
+      try {
+        const res = await fetch("tags.csv");
+        if (!res.ok) {
+          throw new Error("No se han podido cargar las etiquetas");
+        }
+        const text = await res.text();
+        // Admite tanto separación por comas como por saltos de línea
+        validTags = text
+          .split(/[\n,\r]+/)
+          .map((s) => s.trim())
+          .filter((s) => s.length > 0);
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = "Error cargando etiquetas válidas.";
+      }
+    }
+
+    async function startNfcScan() {
+      if (!("NDEFReader" in window)) {
+        statusEl.textContent =
+          "Este navegador no soporta Web NFC. Usa Chrome en Android.";
+        return;
+      }
+
+      if (!validTags.length) {
+        statusEl.textContent = "Cargando etiquetas válidas… inténtalo de nuevo en unos segundos.";
+        // Intento de recarga rápida
+        loadTags();
+        return;
+      }
+
+      try {
+        statusEl.textContent = "Acerca la tarjeta NFC al dispositivo…";
+
+        const ndef = new NDEFReader();
+
+        ndef.onreadingerror = () => {
+          statusEl.textContent = "No se pudo leer la tarjeta. Inténtalo de nuevo.";
+        };
+
+        ndef.onreading = (event) => {
+          const serial = (event.serialNumber || "").trim();
+          console.log("Serial NFC leído:", serial);
+
+          if (serial && validTags.includes(serial)) {
+            statusEl.textContent = "Tarjeta válida. Accediendo…";
+            // Guardar texto EXACTO "autorizado" en localStorage
+            localStorage.setItem("autorizado", "autorizado");
+            window.location.href = "dashboard.html";
+          } else {
+            statusEl.textContent = "Tarjeta no válida para este portal.";
+          }
+        };
+
+        await ndef.scan();
+      } catch (error) {
+        console.error(error);
+        statusEl.textContent =
+          "Error al iniciar el escaneo NFC. Comprueba permisos y vuelve a intentarlo.";
+      }
+    }
+
+    scanButton.addEventListener("click", startNfcScan);
+
+    // Cargar las etiquetas válidas al iniciar
+    loadTags();
+  </script>
+</body>
+</html>
